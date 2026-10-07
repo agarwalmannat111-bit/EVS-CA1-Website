@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forest Guardian | AI Forest Fire Risk Monitor</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#home">🌲 Forest Guardian</a>
+  <nav>
+    <a href="#home">Home</a><a href="#predictor">Risk Predictor</a><a href="#map">Risk Map</a>
+    <a href="#dashboard">Dashboard</a><a href="#forest-fires">Forest Fires</a>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div>
+    <span class="eyebrow">AI-BASED ENVIRONMENTAL MONITORING</span>
+    <h1>Predict forest fire risk <span>before it becomes a disaster.</span></h1>
+    <p>Forest Guardian combines environmental conditions, geographic location and an AI-ready risk model to support early forest-fire awareness and preventive action.</p>
+    <div class="hero-actions"><a class="btn primary" href="#map">Open Risk Map →</a><a class="btn secondary" href="#forest-fires">Learn About Forest Fires</a></div>
+  </div>
+  <div class="hero-card">
+    <div class="pulse"></div><div class="hero-card-title">SYSTEM STATUS</div>
+    <div class="hero-status">● MONITORING READY</div>
+    <p>Select a real location on the geographic map to load current weather conditions and calculate a demonstration fire-risk estimate.</p>
+    <div class="mini-bars"><div><span>Geographic map</span><b>ACTIVE</b></div><div><span>Weather feed</span><b>READY</b></div><div><span>Risk engine</span><b>READY</b></div></div>
+  </div>
+</section>
+
+<section id="map" class="section map-section">
+  <div class="section-heading">
+    <span class="eyebrow">REAL GEOGRAPHIC MAP</span>
+    <h2>Forest Fire Risk Map</h2>
+    <p>Search a real place, click anywhere on the map, or use your location. The prototype retrieves current weather for the selected coordinates and converts the conditions into a demonstration risk estimate.</p>
+  </div>
+
+  <div class="map-toolbar">
+    <input id="locationSearch" type="text" placeholder="Search a place, forest, city or region…">
+    <button id="searchLocation" class="btn secondary">Search</button>
+    <button id="locateMe" class="btn secondary">📍 My Location</button>
+  </div>
+  <div id="mapStatus" class="map-status">Click the map or search for a location.</div>
+
+  <div class="map-layout">
+    <div id="realMap" class="real-map"></div>
+    <aside class="panel location-panel">
+      <div class="result-label">SELECTED LOCATION</div>
+      <h3 id="selectedArea">No location selected</h3>
+      <p id="coordinates">Latitude — · Longitude —</p>
+      <div id="locationRisk" class="selected-risk neutral">—</div>
+      <div id="locationScore" class="location-score">Risk not calculated</div>
+      <div class="location-data">
+        <div><span>🌡️ Temperature</span><b id="locTemp">—</b></div>
+        <div><span>💧 Humidity</span><b id="locHumidity">—</b></div>
+        <div><span>💨 Wind</span><b id="locWind">—</b></div>
+        <div><span>🌱 Soil moisture</span><b id="locSoil">—</b></div>
+      </div>
+      <label class="map-input-label">Vegetation dryness
+        <select id="mapDryness"><option value="10">Low</option><option value="35" selected>Moderate</option><option value="65">High</option><option value="90">Extreme</option></select>
+      </label>
+      <button id="analyzeLocation" class="btn primary full" disabled>Analyze Selected Area</button>
+      <p class="fineprint">Weather is retrieved for the selected coordinates. The fire-risk score is an academic demonstration, not an operational emergency warning.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="predictor" class="section">
+<div class="section-heading"><span class="eyebrow">CORE PRODUCT</span><h2>Manual AI Fire-Risk Predictor</h2><p>For demonstrations without map data, enter environmental conditions and click Analyze Risk. The result remains hidden until you submit.</p></div>
+<div class="predictor-grid">
+<div class="panel form-panel">
+<div class="input-row">
+<label>Temperature <span>°C</span><input id="temperature" type="number" min="0" max="60" value="30"></label>
+<label>Humidity <span>%</span><input id="humidity" type="number" min="0" max="100" value="55"></label>
+</div>
+<div class="input-row">
+<label>Wind speed <span>km/h</span><input id="wind" type="number" min="0" max="150" value="12"></label>
+<label>Soil moisture <span>%</span><input id="soil" type="number" min="0" max="100" value="55"></label>
+</div>
+<label>Vegetation dryness<select id="dryness"><option value="10">Low</option><option value="35" selected>Moderate</option><option value="65">High</option><option value="90">Extreme</option></select></label>
+<label>Smoke / gas indication<select id="smoke"><option value="0" selected>None detected</option><option value="25">Low</option><option value="60">Moderate</option><option value="90">High</option></select></label>
+<button id="predictBtn" class="btn primary full">Analyze Risk</button>
+<p class="fineprint">Academic demo scoring model. A trained Random Forest model can replace this formula in the final version.</p>
+</div>
+<div id="resultPanel" class="panel result-panel hidden">
+<div class="result-label">PREDICTED RISK</div><div id="riskLevel" class="risk-level low">LOW</div>
+<div id="riskScore" class="risk-score">18%</div><div class="meter"><div id="meterFill" class="meter-fill low-fill"></div></div>
+<div id="riskMessage" class="risk-message"></div><div class="factors"><h3>Key factors</h3><ul id="factorList"></ul></div>
+</div>
+<div id="emptyResult" class="panel result-placeholder"><div class="placeholder-icon">🔥</div><h3>Risk prediction is waiting</h3><p>Enter the conditions and click <b>Analyze Risk</b>.</p></div>
+</div>
+</section>
+
+<section id="dashboard" class="section dashboard-section">
+<div class="section-heading"><span class="eyebrow">MONITORING VIEW</span><h2>Environmental Dashboard</h2><p>A snapshot of the latest analyzed conditions.</p></div>
+<div class="stats-grid">
+<div class="stat-card"><span>🌡️ Temperature</span><strong id="dashTemp">—</strong><small>Heat contribution</small></div>
+<div class="stat-card"><span>💧 Humidity</span><strong id="dashHumidity">—</strong><small>Moisture in air</small></div>
+<div class="stat-card"><span>💨 Wind</span><strong id="dashWind">—</strong><small>Potential spread factor</small></div>
+<div class="stat-card"><span>🌱 Soil moisture</span><strong id="dashSoil">—</strong><small>Ground dryness indicator</small></div>
+</div>
+<div class="dashboard-lower">
+<div class="panel"><h3>Fire-Risk Trend</h3><p class="muted">Illustrative trend based on the latest risk assessment.</p><div class="alarm-banner">⚠️ RISK ESCALATION MONITOR <span>● ACTIVE</span></div><div class="alarm-chart" id="chart"></div><div class="chart-axis"><span>6h ago</span><span>5h</span><span>4h</span><span>3h</span><span>2h</span><span>1h</span><span>NOW</span></div></div>
+<div class="panel alert-panel"><h3>Early-Warning Logic</h3><div class="alert-step"><b>01</b><span>Environmental data is collected.</span></div><div class="alert-step"><b>02</b><span>Risk score is calculated.</span></div><div class="alert-step"><b>03</b><span>High-risk factors are highlighted.</span></div><div class="alert-step"><b>04</b><span>Preventive monitoring is recommended.</span></div></div>
+</div>
+</section>
+
+<section id="forest-fires" class="section fire-section">
+<div class="section-heading"><span class="eyebrow">ENVIRONMENTAL SCIENCE</span><h2>Forest Fires — Causes, Effects & Prevention</h2><p>Detailed reference material for the EVS component of the project.</p></div>
+<div class="info-grid">
+<article class="info-card"><span class="info-icon">🔥</span><h3>What is a forest fire?</h3><p>A forest fire is an uncontrolled fire that spreads through vegetation such as grass, shrubs, leaves and trees. Fire requires heat, fuel and oxygen, while weather, vegetation and terrain influence ignition and spread.</p></article>
+<article class="info-card"><span class="info-icon">⚡</span><h3>Natural causes</h3><ul><li>Lightning can ignite dry vegetation.</li><li>Heat and drought can make vegetation highly combustible.</li><li>Rare natural events such as volcanic activity can provide ignition.</li></ul></article>
+<article class="info-card"><span class="info-icon">🚬</span><h3>Human causes</h3><ul><li>Unattended campfires and outdoor burning.</li><li>Discarded cigarettes or hot materials.</li><li>Agricultural or waste burning spreading into vegetation.</li><li>Electrical faults, machinery sparks and vehicles.</li><li>Deliberate burning or arson.</li></ul></article>
+<article class="info-card"><span class="info-icon">🌡️</span><h3>Conditions that increase risk</h3><ul><li>High temperatures dry vegetation.</li><li>Low humidity reduces moisture in fuels.</li><li>Low soil and vegetation moisture indicate dry conditions.</li><li>Strong winds can accelerate spread and carry embers.</li><li>Continuous dry vegetation provides available fuel.</li></ul></article>
+<article class="info-card"><span class="info-icon">🌳</span><h3>Environmental effects</h3><ul><li>Loss of vegetation and wildlife habitat.</li><li>Smoke and particulate pollution.</li><li>Greater soil erosion after vegetation loss.</li><li>Carbon stored in biomass is released during combustion.</li><li>Severe fires can alter ecosystem structure.</li></ul></article>
+<article class="info-card"><span class="info-icon">🛡️</span><h3>Prevention & preparedness</h3><ul><li>Follow local restrictions on outdoor burning.</li><li>Never leave campfires unattended.</li><li>Keep ignition sources away from dry vegetation.</li><li>Manage dry fuel and maintain firebreaks where appropriate.</li><li>Use early-warning systems and rapid reporting.</li><li>Combine weather, satellite, sensor and ground information.</li></ul></article>
+</div>
+<div class="prevention-box"><h3>Why early warning matters</h3><p>Identifying dangerous environmental conditions early can give forest managers more time to investigate, issue warnings and organize preventive action. Forest Guardian demonstrates this concept by turning geographic and environmental data into an understandable risk level.</p></div>
+</section>
+</main>
+<footer><span>Forest Guardian · Academic EVS Project</span><span>AI-assisted forest fire risk monitoring prototype</span></footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>window.L||document.write('<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"><\/script>')</script>
+<script>window.L||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"><\/script>')</script>
+<script src="script.js"></script>
+</body>
+</html>
